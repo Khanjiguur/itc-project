@@ -41,6 +41,7 @@ export const NOMINATIONS = [
             badgeText: '#92400e',
             sidebarBg: '#fffdf0',
             name: 'gold',
+
         }
     },
     {
