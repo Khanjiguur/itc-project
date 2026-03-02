@@ -12,6 +12,7 @@ function App() {
         const unsubscribe = onSnapshot(q, (snapshot) => {
             setMessages(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
         });
+
         return () => unsubscribe();
     }, []);
 
@@ -31,7 +32,7 @@ function App() {
             <h1>ITC Project Chat</h1>
             <form onSubmit={handleSend}>
                 <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Type a message..." />
-                <button type="submit">Send</button>
+                <button type="submit">testest</button>
             </form>
 
             <ul>
