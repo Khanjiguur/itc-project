@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // nominations/{nominationId}/public/{doc}
+    // — vote counts and voter list — everyone can read, anyone can write
+    match /nominations/{nominationId}/public/{docId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // nominations/{nominationId}/myVotes/{userId}
+    // — individual vote records — everyone can read/write (no real auth)
+    match /nominations/{nominationId}/myVotes/{userId} {
+      allow read, write: if true;
+    }
+
+    // nominations/{nominationId}/voteLog/{logId}
+    // — secret vote log — write only, no public read
+    match /nominations/{nominationId}/voteLog/{logId} {
+      allow read: if false;
+      allow write: if true;
+    }
+  }
+}
