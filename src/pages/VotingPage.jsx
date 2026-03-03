@@ -6,6 +6,8 @@ import { useAuth } from '../context/AuthContext';
 import { useVotes } from '../hooks/useVotes';
 import EmployeeCard from '../components/EmployeeCard';
 import Sidebar from '../components/Sidebar';
+import { db } from '../lib/firebase';
+import { doc, onSnapshot } from 'firebase/firestore';
 
 export default function VotingPage() {
     const { user, logout } = useAuth();
@@ -17,13 +19,42 @@ export default function VotingPage() {
         loading,
         totalVoters,
         voterList,
-        completedVoters,
         fullyBackedEmployees,
         getRemainingVotes,
         canVote,
         castVote,
         getMyVoteCountForEmployee,
     } = useVotes(nomination.id, user);
+
+    // Previous nomination winner
+    const [prevWinner, setPrevWinner] = useState(null);
+    const hasPrev = ACTIVE_NOMINATION_INDEX >= 1;
+
+    useEffect(() => {
+        if (!hasPrev) return;
+        const prevNomination = NOMINATIONS[ACTIVE_NOMINATION_INDEX - 1];
+        const countsRef = doc(db, 'nominations', prevNomination.id, 'public', 'counts');
+        const unsub = onSnapshot(countsRef, (snap) => {
+            if (!snap.exists()) return;
+            const counts = snap.data();
+            // Find employee with highest votes
+            let maxVotes = 0;
+            let winnerId = null;
+            for (const [empId, cnt] of Object.entries(counts)) {
+                if (cnt > maxVotes) {
+                    maxVotes = cnt;
+                    winnerId = empId;
+                }
+            }
+            if (winnerId) {
+                const emp = EMPLOYEES.find(e => e.id === winnerId);
+                if (emp) {
+                    setPrevWinner({ employee: emp, votes: maxVotes, nomination: prevNomination });
+                }
+            }
+        });
+        return () => unsub();
+    }, [hasPrev]);
 
     const handleVote = async (employee) => {
         const remaining = getRemainingVotes();
@@ -63,6 +94,18 @@ export default function VotingPage() {
     const rankMap = {};
     sortedEmployees.forEach((emp, i) => { rankMap[emp.id] = i + 1; });
 
+    // Medal shows only when strictly ahead of next rank
+    // e.g. rank1 medal shows only if emp[0].votes > emp[1].votes
+    const showMedalSet = new Set();
+    [0, 1, 2].forEach(i => {
+        const curr = voteCounts[sortedEmployees[i]?.id] || 0;
+        const next = voteCounts[sortedEmployees[i + 1]?.id] || 0;
+        if (curr > 0 && curr > next) showMedalSet.add(sortedEmployees[i]?.id);
+    });
+
+    // Employees who received all 3 votes from a single person
+    const fullyBackedSet = new Set((fullyBackedEmployees || []).map(e => e.employeeId));
+
     const remaining = getRemainingVotes();
 
     return (
@@ -97,8 +140,8 @@ export default function VotingPage() {
                         🏆
                     </motion.div>
                     <div>
-                        <h1 className="header-title">ITC AWARDS 2025</h1>
-                        <p className="header-sub">Хамгийн шилдэг хүмүүсийг сонго!</p>
+                        <h1 className="header-title">ITC AWARDS 2026</h1>
+                        <p className="header-sub">Хамгийн шилдэгүүдийг сонгоцгооё!</p>
                     </div>
                 </div>
                 <button className="logout-btn" onClick={logout}>
@@ -143,6 +186,162 @@ export default function VotingPage() {
                 </div>
             </motion.div>
 
+            {/* Previous Nomination Winner */}
+            <AnimatePresence>
+                {prevWinner && (
+                    <motion.div
+                        className="prev-winner-section"
+                        initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ delay: 0.35, type: 'spring', stiffness: 280, damping: 22 }}
+                    >
+                        {/* Trophy glow background */}
+                        <div
+                            className="prev-winner-glow"
+                            style={{ background: `radial-gradient(ellipse at 50% 0%, ${prevWinner.nomination.theme.glow} 0%, transparent 80%)` }}
+                        />
+
+                        <div className="prev-winner-label">
+                            <motion.span
+                                className="prev-winner-crown"
+                                animate={{ rotate: [-8, 8, -8], scale: [1, 1.12, 1] }}
+                                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                            >
+                                🏆
+                            </motion.span>
+                            <span className="prev-winner-title-text">
+                                «{prevWinner.nomination.name}» номинацийн ялагч
+                            </span>
+                            <motion.span
+                                className="prev-winner-crown"
+                                animate={{ rotate: [8, -8, 8], scale: [1, 1.12, 1] }}
+                                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.4 }}
+                            >
+                                🏆
+                            </motion.span>
+                        </div>
+
+                        <motion.div
+                            className="prev-winner-card"
+                            style={{
+                                borderColor: prevWinner.nomination.theme.primary,
+                                boxShadow: `0 0 40px ${prevWinner.nomination.theme.glow}, 0 8px 32px rgba(0,0,0,0.08)`,
+                            }}
+                            animate={{
+                                boxShadow: [
+                                    `0 0 20px ${prevWinner.nomination.theme.glow}, 0 8px 32px rgba(0,0,0,0.08)`,
+                                    `0 0 50px ${prevWinner.nomination.theme.glow}, 0 8px 32px rgba(0,0,0,0.12)`,
+                                    `0 0 20px ${prevWinner.nomination.theme.glow}, 0 8px 32px rgba(0,0,0,0.08)`,
+                                ]
+                            }}
+                            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                        >
+                            {/* Avatar */}
+                            <motion.div
+                                className="prev-winner-avatar"
+                                style={{
+                                    background: `linear-gradient(135deg, ${prevWinner.nomination.theme.primary}, ${prevWinner.nomination.theme.secondary})`,
+                                }}
+                                animate={{ scale: [1, 1.05, 1] }}
+                                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                            >
+                                <span className="prev-winner-avatar-text">
+                                    {prevWinner.employee.name.charAt(0)}
+                                </span>
+                                <motion.span
+                                    className="prev-winner-avatar-emoji"
+                                    animate={{ rotate: [0, 20, -20, 0] }}
+                                    transition={{ duration: 3, repeat: Infinity }}
+                                >
+                                    {prevWinner.nomination.emoji}
+                                </motion.span>
+                            </motion.div>
+
+                            {/* Info */}
+                            <div className="prev-winner-info">
+                                <motion.div
+                                    className="prev-winner-name"
+                                    style={{ color: prevWinner.nomination.theme.textDark }}
+                                    initial={{ opacity: 0, x: -10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.5 }}
+                                >
+                                    {prevWinner.employee.name}
+                                </motion.div>
+                                <div
+                                    className="prev-winner-votes"
+                                    style={{ color: prevWinner.nomination.theme.primary }}
+                                >
+                                    <motion.span
+                                        key={prevWinner.votes}
+                                        initial={{ scale: 1.4, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        transition={{ type: 'spring', stiffness: 400 }}
+                                        className="prev-winner-votes-num"
+                                    >
+                                        {prevWinner.votes}
+                                    </motion.span>
+                                    <span className="prev-winner-votes-label"> санал авсан</span>
+                                </div>
+                            </div>
+
+                            {/* Rank & Stars */}
+                            <div className="prev-winner-right">
+                                <motion.div
+                                    className="prev-winner-badge"
+                                    style={{ background: `linear-gradient(135deg, ${prevWinner.nomination.theme.primary}, ${prevWinner.nomination.theme.secondary})` }}
+                                    animate={{ scale: [1, 1.1, 1], rotate: [0, -5, 5, 0] }}
+                                    transition={{ duration: 3, repeat: Infinity }}
+                                >
+                                    🥇
+                                </motion.div>
+                                <div className="prev-winner-stars">
+                                    {[...Array(Math.min(prevWinner.votes, 5))].map((_, i) => (
+                                        <motion.span
+                                            key={i}
+                                            initial={{ scale: 0, rotate: -40 }}
+                                            animate={{ scale: 1, rotate: 0 }}
+                                            transition={{ delay: 0.5 + i * 0.08, type: 'spring', stiffness: 450 }}
+                                            style={{ fontSize: '14px' }}
+                                        >⭐</motion.span>
+                                    ))}
+                                    {prevWinner.votes > 5 && (
+                                        <span className="prev-winner-stars-overflow" style={{ color: prevWinner.nomination.theme.primary }}>
+                                            +{prevWinner.votes - 5}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        </motion.div>
+
+                        {/* Confetti particles */}
+                        <div className="prev-winner-confetti">
+                            {['🎉', '✨', '🌟', '💫', '🎊'].map((sym, i) => (
+                                <motion.span
+                                    key={i}
+                                    className="confetti-particle"
+                                    style={{ left: `${10 + i * 18}%` }}
+                                    animate={{
+                                        y: [0, -18, 0],
+                                        opacity: [0.6, 1, 0.6],
+                                        rotate: [0, 20, -20, 0],
+                                    }}
+                                    transition={{
+                                        duration: 2 + i * 0.3,
+                                        repeat: Infinity,
+                                        delay: i * 0.4,
+                                        ease: 'easeInOut',
+                                    }}
+                                >
+                                    {sym}
+                                </motion.span>
+                            ))}
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             {/* Main content */}
             <div className="voting-content">
                 {/* Employee grid */}
@@ -179,6 +378,8 @@ export default function VotingPage() {
                                         onVote={() => handleVote(emp)}
                                         theme={theme}
                                         rank={rankMap[emp.id]}
+                                        showMedal={showMedalSet.has(emp.id)}
+                                        isFullyBacked={fullyBackedSet.has(emp.id)}
                                     />
                                 </motion.div>
                             ))}
@@ -192,8 +393,6 @@ export default function VotingPage() {
                     remainingVotes={getRemainingVotes()}
                     totalVoters={totalVoters}
                     voterList={voterList}
-                    completedVoters={completedVoters}
-                    fullyBackedEmployees={fullyBackedEmployees}
                     nominationName={nomination.name}
                     user={user}
                 />

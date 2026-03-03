@@ -576,6 +576,53 @@ body {
   margin-left: 2px;
 }
 
+/* Fully backed — 3 gold stars block */
+.card-fully-backed {
+  position: absolute;
+  top: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  z-index: 7;
+  cursor: default;
+}
+
+.card-fully-backed-star {
+  font-size: 18px;
+  display: inline-block;
+  filter: drop-shadow(0 2px 6px rgba(245, 158, 11, 0.7));
+}
+
+.card-fully-backed-tooltip {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #d97706, #92400e);
+  color: #fff;
+  font-size: 0.67rem;
+  font-weight: 700;
+  white-space: nowrap;
+  padding: 5px 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.4);
+  pointer-events: none;
+  z-index: 20;
+}
+
+.card-fully-backed-tooltip::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-bottom-color: #d97706;
+}
+
+
 /* Vote button */
 .vote-btn {
   margin: 10px 14px 0;
@@ -820,6 +867,193 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* ============================================================
+   PREVIOUS NOMINATION WINNER SECTION
+   ============================================================ */
+.prev-winner-section {
+  position: relative;
+  z-index: 10;
+  margin: 0 24px 16px;
+  padding: 20px 24px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  box-shadow:
+    0 8px 40px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  overflow: hidden;
+}
+
+.prev-winner-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.4;
+  border-radius: 24px;
+}
+
+.prev-winner-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.prev-winner-crown {
+  font-size: 1.4rem;
+  filter: drop-shadow(0 2px 8px rgba(245, 158, 11, 0.5));
+  display: inline-block;
+}
+
+.prev-winner-title-text {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #64748b;
+}
+
+.prev-winner-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2.5px solid;
+  position: relative;
+  z-index: 2;
+}
+
+.prev-winner-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+.prev-winner-avatar-text {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  line-height: 1;
+}
+
+.prev-winner-avatar-emoji {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  font-size: 18px;
+  background: #fff;
+  border-radius: 50%;
+  padding: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.prev-winner-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.prev-winner-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.prev-winner-votes {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.prev-winner-votes-num {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  line-height: 1;
+  display: inline-block;
+}
+
+.prev-winner-votes-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.prev-winner-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.prev-winner-badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
+}
+
+.prev-winner-stars {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 80px;
+}
+
+.prev-winner-stars-overflow {
+  font-size: 11px;
+  font-weight: 800;
+  margin-left: 2px;
+}
+
+.prev-winner-confetti {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  display: flex;
+}
+
+.confetti-particle {
+  position: absolute;
+  font-size: 1rem;
+  pointer-events: none;
+  opacity: 0.7;
 }
 
 /* ============================================================

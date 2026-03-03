@@ -78,7 +78,7 @@ export default function LoginPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
                 >
-                    Хамгийн шилдэг хүмүүсийг сонго!
+                    Хамгийн шилдэгүүдийг сонгоцгооё!
                 </motion.p>
 
                 <motion.form
@@ -136,7 +136,7 @@ export default function LoginPage() {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.6 }}
                 >
-                    Зөвхөн ITC имэйлтэй ажилчид нэвтрэх боломжтой
+                    Зөвхөн ITC мэйлээрээ нэвтрэх боломжтой
                 </motion.p>
             </motion.div>
         </div>

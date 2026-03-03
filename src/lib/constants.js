@@ -5,7 +5,7 @@
 // Одоо идэвхтэй байгаа номинацийн индекс (0 = анхдагч)
 // 0 = Шилдэг удирдагч, 1 = Хамтын ажиллагаа, 2 = Шинэлэг санаа
 // 3 = Хамгийн эерэг хандлага, 4 = Нуугдмал авьяас
-export const ACTIVE_NOMINATION_INDEX = 4;
+export const ACTIVE_NOMINATION_INDEX = 3;
 
 // Нэг номинацид нэг хүн хэдэн санал өгөх вэ
 export const VOTES_PER_PERSON = 3;
@@ -171,7 +171,7 @@ export const NOMINATIONS = [
 //  Та энэхүү жагсаалтыг бүрэн ажилчдынхаа мэдээллээр солино уу
 // ============================================================
 export const EMPLOYEES = [
-    { id: 'emp001', name: 'Бат-Эрдэнэ Дорж', email: 'bat-erdene.dorj@itc.mn', gender: 'm', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=256&auto=format&fit=crop' },
+    { id: 'emp001', name: 'Бат-Эрдэнэ Дорж', email: 'test@gmail.com', gender: 'm', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=256&auto=format&fit=crop' },
     { id: 'emp002', name: 'Оюунцэцэг Ганбаатар', email: 'oyuuntsetseg.ganbaatar@itc.mn', gender: 'f', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=256&auto=format&fit=crop' },
     { id: 'emp003', name: 'Энхбаяр Мөнхбаяр', email: 'enkhbayar.munkhbayar@itc.mn', gender: 'm', image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=256&auto=format&fit=crop' },
     { id: 'emp004', name: 'Солонго Болд', email: 'solongo.bold@itc.mn', gender: 'f', image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=256&auto=format&fit=crop' },

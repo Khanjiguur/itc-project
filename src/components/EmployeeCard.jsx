@@ -36,7 +36,7 @@ function getInitials(name) {
     return (parts[0][0] + parts[1][0]).toUpperCase();
 }
 
-export default function EmployeeCard({ employee, voteCount, myVoteCount, canVote, onVote, theme, rank }) {
+export default function EmployeeCard({ employee, voteCount, myVoteCount, canVote, onVote, theme, rank, showMedal, isFullyBacked }) {
     const [isHovered, setIsHovered] = useState(false);
     const [particles, setParticles] = useState([]);
     const [voting, setVoting] = useState(false);
@@ -45,7 +45,8 @@ export default function EmployeeCard({ employee, voteCount, myVoteCount, canVote
     const genderEmoji = GENDER_EMOJI[employee.gender] || '👤';
     const hasMyVotes = myVoteCount > 0;
     const initials = getInitials(employee.name);
-    const rankBadge = rank <= 3 ? RANK_BADGES[rank - 1] : null;
+    const rankBadge = (showMedal && rank <= 3) ? RANK_BADGES[rank - 1] : null;
+    const [showFullyBackedTooltip, setShowFullyBackedTooltip] = useState(false);
 
     const floatDelay = (parseInt(employee.id.replace('emp', ''), 10) % 8) * 0.35;
 
@@ -110,6 +111,42 @@ export default function EmployeeCard({ employee, voteCount, myVoteCount, canVote
                     >
                         {rankBadge}
                     </motion.span>
+                )}
+
+                {/* Fully backed — 3 big gold stars top-center with tooltip */}
+                {isFullyBacked && (
+                    <motion.div
+                        className="card-fully-backed"
+                        onMouseEnter={() => setShowFullyBackedTooltip(true)}
+                        onMouseLeave={() => setShowFullyBackedTooltip(false)}
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ type: 'spring', stiffness: 400, delay: 0.1 }}
+                    >
+                        {[0, 1, 2].map(i => (
+                            <motion.span
+                                key={i}
+                                className="card-fully-backed-star"
+                                animate={{ scale: [1, 1.25, 1], rotate: [0, 12, -12, 0] }}
+                                transition={{ duration: 2.2, repeat: Infinity, delay: i * 0.28, ease: 'easeInOut' }}
+                            >
+                                ⭐
+                            </motion.span>
+                        ))}
+                        <AnimatePresence>
+                            {showFullyBackedTooltip && (
+                                <motion.div
+                                    className="card-fully-backed-tooltip"
+                                    initial={{ opacity: 0, y: 4, scale: 0.9 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, y: 4, scale: 0.9 }}
+                                    transition={{ duration: 0.15 }}
+                                >
+                                    🏅 Бүтэн санал авч чадсан!
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </motion.div>
                 )}
 
                 {/* My-vote indicator — top right overlay */}
