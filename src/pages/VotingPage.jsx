@@ -26,35 +26,42 @@ export default function VotingPage() {
         getMyVoteCountForEmployee,
     } = useVotes(nomination.id, user);
 
-    // Previous nomination winner
-    const [prevWinner, setPrevWinner] = useState(null);
-    const hasPrev = ACTIVE_NOMINATION_INDEX >= 1;
+    // All previous nominations' winners
+    const [prevWinners, setPrevWinners] = useState([]);
 
     useEffect(() => {
-        if (!hasPrev) return;
-        const prevNomination = NOMINATIONS[ACTIVE_NOMINATION_INDEX - 1];
-        const countsRef = doc(db, 'nominations', prevNomination.id, 'public', 'counts');
-        const unsub = onSnapshot(countsRef, (snap) => {
-            if (!snap.exists()) return;
-            const counts = snap.data();
-            // Find employee with highest votes
-            let maxVotes = 0;
-            let winnerId = null;
-            for (const [empId, cnt] of Object.entries(counts)) {
-                if (cnt > maxVotes) {
-                    maxVotes = cnt;
-                    winnerId = empId;
+        if (ACTIVE_NOMINATION_INDEX < 1) return;
+
+        const unsubs = [];
+        // Initialize slots
+        setPrevWinners(Array(ACTIVE_NOMINATION_INDEX).fill(null));
+
+        for (let idx = 0; idx < ACTIVE_NOMINATION_INDEX; idx++) {
+            const prevNom = NOMINATIONS[idx];
+            const countsRef = doc(db, 'nominations', prevNom.id, 'public', 'counts');
+            const unsub = onSnapshot(countsRef, (snap) => {
+                if (!snap.exists()) return;
+                const counts = snap.data();
+                let maxVotes = 0;
+                let winnerId = null;
+                for (const [empId, cnt] of Object.entries(counts)) {
+                    if (cnt > maxVotes) { maxVotes = cnt; winnerId = empId; }
                 }
-            }
-            if (winnerId) {
-                const emp = EMPLOYEES.find(e => e.id === winnerId);
-                if (emp) {
-                    setPrevWinner({ employee: emp, votes: maxVotes, nomination: prevNomination });
+                if (winnerId) {
+                    const emp = EMPLOYEES.find(e => e.id === winnerId);
+                    if (emp) {
+                        setPrevWinners(prev => {
+                            const next = [...prev];
+                            next[idx] = { employee: emp, votes: maxVotes, nomination: prevNom };
+                            return next;
+                        });
+                    }
                 }
-            }
-        });
-        return () => unsub();
-    }, [hasPrev]);
+            });
+            unsubs.push(unsub);
+        }
+        return () => unsubs.forEach(u => u());
+    }, []);
 
     const handleVote = async (employee) => {
         const remaining = getRemainingVotes();
@@ -149,6 +156,147 @@ export default function VotingPage() {
                 </button>
             </motion.header>
 
+            {/* Previous Nominations' Winners */}
+            <AnimatePresence>
+                {prevWinners.filter(Boolean).length > 0 && (
+                    <div className="prev-winners-row">
+                        {prevWinners.map((winner, idx) => winner && (
+                            <motion.div
+                                key={winner.nomination.id}
+                                className="prev-winner-section"
+                                initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                transition={{ delay: 0.25 + idx * 0.08, type: 'spring', stiffness: 280, damping: 22 }}
+                            >
+                                {/* Glow bg */}
+                                <div
+                                    className="prev-winner-glow"
+                                    style={{ background: `radial-gradient(ellipse at 50% 0%, ${winner.nomination.theme.glow} 0%, transparent 80%)` }}
+                                />
+
+                                <div className="prev-winner-label">
+                                    <motion.span
+                                        className="prev-winner-crown"
+                                        animate={{ rotate: [-8, 8, -8], scale: [1, 1.12, 1] }}
+                                        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                                    >
+                                        🏆
+                                    </motion.span>
+                                    <span className="prev-winner-title-text">
+                                        «{winner.nomination.name}»
+                                    </span>
+                                    <motion.span
+                                        className="prev-winner-crown"
+                                        animate={{ rotate: [8, -8, 8], scale: [1, 1.12, 1] }}
+                                        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.4 }}
+                                    >
+                                        🏆
+                                    </motion.span>
+                                </div>
+
+                                <motion.div
+                                    className="prev-winner-card"
+                                    style={{
+                                        borderColor: winner.nomination.theme.primary,
+                                        boxShadow: `0 0 40px ${winner.nomination.theme.glow}, 0 8px 32px rgba(0,0,0,0.08)`,
+                                    }}
+                                    animate={{
+                                        boxShadow: [
+                                            `0 0 20px ${winner.nomination.theme.glow}, 0 8px 32px rgba(0,0,0,0.08)`,
+                                            `0 0 50px ${winner.nomination.theme.glow}, 0 8px 32px rgba(0,0,0,0.12)`,
+                                            `0 0 20px ${winner.nomination.theme.glow}, 0 8px 32px rgba(0,0,0,0.08)`,
+                                        ]
+                                    }}
+                                    transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                                >
+                                    <motion.div
+                                        className="prev-winner-avatar"
+                                        style={{ background: `linear-gradient(135deg, ${winner.nomination.theme.primary}, ${winner.nomination.theme.secondary})` }}
+                                        animate={{ scale: [1, 1.05, 1] }}
+                                        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                                    >
+                                        <span className="prev-winner-avatar-text">{winner.employee.name.charAt(0)}</span>
+                                        <motion.span
+                                            className="prev-winner-avatar-emoji"
+                                            animate={{ rotate: [0, 20, -20, 0] }}
+                                            transition={{ duration: 3, repeat: Infinity }}
+                                        >
+                                            {winner.nomination.emoji}
+                                        </motion.span>
+                                    </motion.div>
+
+                                    <div className="prev-winner-info">
+                                        <motion.div
+                                            className="prev-winner-name"
+                                            style={{ color: winner.nomination.theme.textDark }}
+                                            initial={{ opacity: 0, x: -10 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            transition={{ delay: 0.4 + idx * 0.1 }}
+                                        >
+                                            {winner.employee.name}
+                                        </motion.div>
+                                        <div className="prev-winner-votes" style={{ color: winner.nomination.theme.primary }}>
+                                            <motion.span
+                                                key={winner.votes}
+                                                initial={{ scale: 1.4, opacity: 0 }}
+                                                animate={{ scale: 1, opacity: 1 }}
+                                                transition={{ type: 'spring', stiffness: 400 }}
+                                                className="prev-winner-votes-num"
+                                            >
+                                                {winner.votes}
+                                            </motion.span>
+                                            <span className="prev-winner-votes-label"> санал авсан</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="prev-winner-right">
+                                        <motion.div
+                                            className="prev-winner-badge"
+                                            style={{ background: `linear-gradient(135deg, ${winner.nomination.theme.primary}, ${winner.nomination.theme.secondary})` }}
+                                            animate={{ scale: [1, 1.1, 1], rotate: [0, -5, 5, 0] }}
+                                            transition={{ duration: 3, repeat: Infinity }}
+                                        >
+                                            🥇
+                                        </motion.div>
+                                        <div className="prev-winner-stars">
+                                            {[...Array(Math.min(winner.votes, 5))].map((_, i) => (
+                                                <motion.span
+                                                    key={i}
+                                                    initial={{ scale: 0, rotate: -40 }}
+                                                    animate={{ scale: 1, rotate: 0 }}
+                                                    transition={{ delay: 0.4 + i * 0.08, type: 'spring', stiffness: 450 }}
+                                                    style={{ fontSize: '14px' }}
+                                                >⭐</motion.span>
+                                            ))}
+                                            {winner.votes > 5 && (
+                                                <span className="prev-winner-stars-overflow" style={{ color: winner.nomination.theme.primary }}>
+                                                    +{winner.votes - 5}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+                                </motion.div>
+
+                                <div className="prev-winner-confetti">
+                                    {['🎉', '✨', '🌟', '💫', '🎊'].map((sym, i) => (
+                                        <motion.span
+                                            key={i}
+                                            className="confetti-particle"
+                                            style={{ left: `${10 + i * 18}%` }}
+                                            animate={{ y: [0, -18, 0], opacity: [0.6, 1, 0.6], rotate: [0, 20, -20, 0] }}
+                                            transition={{ duration: 2 + i * 0.3, repeat: Infinity, delay: i * 0.4, ease: 'easeInOut' }}
+                                        >
+                                            {sym}
+                                        </motion.span>
+                                    ))}
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                )}
+            </AnimatePresence>
+
             {/* Nomination Banner */}
             <motion.div
                 className="nomination-banner"
@@ -186,161 +334,8 @@ export default function VotingPage() {
                 </div>
             </motion.div>
 
-            {/* Previous Nomination Winner */}
-            <AnimatePresence>
-                {prevWinner && (
-                    <motion.div
-                        className="prev-winner-section"
-                        initial={{ opacity: 0, y: -20, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ delay: 0.35, type: 'spring', stiffness: 280, damping: 22 }}
-                    >
-                        {/* Trophy glow background */}
-                        <div
-                            className="prev-winner-glow"
-                            style={{ background: `radial-gradient(ellipse at 50% 0%, ${prevWinner.nomination.theme.glow} 0%, transparent 80%)` }}
-                        />
 
-                        <div className="prev-winner-label">
-                            <motion.span
-                                className="prev-winner-crown"
-                                animate={{ rotate: [-8, 8, -8], scale: [1, 1.12, 1] }}
-                                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-                            >
-                                🏆
-                            </motion.span>
-                            <span className="prev-winner-title-text">
-                                «{prevWinner.nomination.name}» номинацийн ялагч
-                            </span>
-                            <motion.span
-                                className="prev-winner-crown"
-                                animate={{ rotate: [8, -8, 8], scale: [1, 1.12, 1] }}
-                                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.4 }}
-                            >
-                                🏆
-                            </motion.span>
-                        </div>
 
-                        <motion.div
-                            className="prev-winner-card"
-                            style={{
-                                borderColor: prevWinner.nomination.theme.primary,
-                                boxShadow: `0 0 40px ${prevWinner.nomination.theme.glow}, 0 8px 32px rgba(0,0,0,0.08)`,
-                            }}
-                            animate={{
-                                boxShadow: [
-                                    `0 0 20px ${prevWinner.nomination.theme.glow}, 0 8px 32px rgba(0,0,0,0.08)`,
-                                    `0 0 50px ${prevWinner.nomination.theme.glow}, 0 8px 32px rgba(0,0,0,0.12)`,
-                                    `0 0 20px ${prevWinner.nomination.theme.glow}, 0 8px 32px rgba(0,0,0,0.08)`,
-                                ]
-                            }}
-                            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-                        >
-                            {/* Avatar */}
-                            <motion.div
-                                className="prev-winner-avatar"
-                                style={{
-                                    background: `linear-gradient(135deg, ${prevWinner.nomination.theme.primary}, ${prevWinner.nomination.theme.secondary})`,
-                                }}
-                                animate={{ scale: [1, 1.05, 1] }}
-                                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                            >
-                                <span className="prev-winner-avatar-text">
-                                    {prevWinner.employee.name.charAt(0)}
-                                </span>
-                                <motion.span
-                                    className="prev-winner-avatar-emoji"
-                                    animate={{ rotate: [0, 20, -20, 0] }}
-                                    transition={{ duration: 3, repeat: Infinity }}
-                                >
-                                    {prevWinner.nomination.emoji}
-                                </motion.span>
-                            </motion.div>
-
-                            {/* Info */}
-                            <div className="prev-winner-info">
-                                <motion.div
-                                    className="prev-winner-name"
-                                    style={{ color: prevWinner.nomination.theme.textDark }}
-                                    initial={{ opacity: 0, x: -10 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.5 }}
-                                >
-                                    {prevWinner.employee.name}
-                                </motion.div>
-                                <div
-                                    className="prev-winner-votes"
-                                    style={{ color: prevWinner.nomination.theme.primary }}
-                                >
-                                    <motion.span
-                                        key={prevWinner.votes}
-                                        initial={{ scale: 1.4, opacity: 0 }}
-                                        animate={{ scale: 1, opacity: 1 }}
-                                        transition={{ type: 'spring', stiffness: 400 }}
-                                        className="prev-winner-votes-num"
-                                    >
-                                        {prevWinner.votes}
-                                    </motion.span>
-                                    <span className="prev-winner-votes-label"> санал авсан</span>
-                                </div>
-                            </div>
-
-                            {/* Rank & Stars */}
-                            <div className="prev-winner-right">
-                                <motion.div
-                                    className="prev-winner-badge"
-                                    style={{ background: `linear-gradient(135deg, ${prevWinner.nomination.theme.primary}, ${prevWinner.nomination.theme.secondary})` }}
-                                    animate={{ scale: [1, 1.1, 1], rotate: [0, -5, 5, 0] }}
-                                    transition={{ duration: 3, repeat: Infinity }}
-                                >
-                                    🥇
-                                </motion.div>
-                                <div className="prev-winner-stars">
-                                    {[...Array(Math.min(prevWinner.votes, 5))].map((_, i) => (
-                                        <motion.span
-                                            key={i}
-                                            initial={{ scale: 0, rotate: -40 }}
-                                            animate={{ scale: 1, rotate: 0 }}
-                                            transition={{ delay: 0.5 + i * 0.08, type: 'spring', stiffness: 450 }}
-                                            style={{ fontSize: '14px' }}
-                                        >⭐</motion.span>
-                                    ))}
-                                    {prevWinner.votes > 5 && (
-                                        <span className="prev-winner-stars-overflow" style={{ color: prevWinner.nomination.theme.primary }}>
-                                            +{prevWinner.votes - 5}
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
-                        </motion.div>
-
-                        {/* Confetti particles */}
-                        <div className="prev-winner-confetti">
-                            {['🎉', '✨', '🌟', '💫', '🎊'].map((sym, i) => (
-                                <motion.span
-                                    key={i}
-                                    className="confetti-particle"
-                                    style={{ left: `${10 + i * 18}%` }}
-                                    animate={{
-                                        y: [0, -18, 0],
-                                        opacity: [0.6, 1, 0.6],
-                                        rotate: [0, 20, -20, 0],
-                                    }}
-                                    transition={{
-                                        duration: 2 + i * 0.3,
-                                        repeat: Infinity,
-                                        delay: i * 0.4,
-                                        ease: 'easeInOut',
-                                    }}
-                                >
-                                    {sym}
-                                </motion.span>
-                            ))}
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
 
             {/* Main content */}
             <div className="voting-content">

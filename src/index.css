@@ -484,8 +484,6 @@ body {
   width: 62px;
   height: 62px;
   border-radius: 50%;
-  margin-top: 18px;
-  margin-bottom: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -576,15 +574,23 @@ body {
   margin-left: 2px;
 }
 
-/* Fully backed — 3 gold stars block */
+/* Avatar wrapper — hearts on top, avatar circle below */
+.card-avatar-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: 14px;
+  margin-bottom: 0;
+  position: relative;
+}
+
+/* Fully backed — 3 hearts above the avatar */
 .card-fully-backed {
-  position: absolute;
-  top: 36px;
-  left: 50%;
-  transform: translateX(-50%);
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 1px;
+  gap: 3px;
   z-index: 7;
   cursor: default;
 }
@@ -592,34 +598,34 @@ body {
 .card-fully-backed-star {
   font-size: 18px;
   display: inline-block;
-  filter: drop-shadow(0 2px 6px rgba(245, 158, 11, 0.7));
+  filter: drop-shadow(0 2px 8px rgba(239, 68, 68, 0.6));
 }
 
 .card-fully-backed-tooltip {
   position: absolute;
-  top: calc(100% + 6px);
+  top: calc(100% + 5px);
   left: 50%;
   transform: translateX(-50%);
-  background: linear-gradient(135deg, #d97706, #92400e);
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
   color: #fff;
   font-size: 0.67rem;
   font-weight: 700;
   white-space: nowrap;
   padding: 5px 10px;
   border-radius: 8px;
-  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.4);
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
   pointer-events: none;
-  z-index: 20;
+  z-index: 30;
 }
 
-.card-fully-backed-tooltip::before {
+.card-fully-backed-tooltip::after {
   content: '';
   position: absolute;
   bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
   border: 5px solid transparent;
-  border-bottom-color: #d97706;
+  border-bottom-color: #ef4444;
 }
 
 
@@ -867,6 +873,26 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Previous winners row — horizontal layout for multiple past nominations */
+.prev-winners-row {
+  display: flex;
+  gap: 12px;
+  margin: 0 24px 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+
+.prev-winners-row::-webkit-scrollbar {
+  display: none;
+}
+
+.prev-winners-row .prev-winner-section {
+  flex: 1;
+  min-width: 280px;
+  margin: 0;
 }
 
 /* ============================================================
