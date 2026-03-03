@@ -10,6 +10,11 @@ export default function Sidebar({ theme, remainingVotes, totalVoters, voterList,
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
         >
+            {/* User info */}
+            <div className="sidebar-user">
+                <span className="sidebar-user-dot" style={{ background: theme.primary }} />
+                <span className="sidebar-user-name">{user?.name}</span>
+            </div>
             {/* My votes status */}
             <div className="sidebar-section">
                 <h3 className="sidebar-title" style={{ color: theme.primary }}>
@@ -56,9 +61,8 @@ export default function Sidebar({ theme, remainingVotes, totalVoters, voterList,
                     </motion.span>
                 </div>
             </div>
-
             {/* Voter list — only shown when > 20 voters */}
-            {voterList.length > 10 && (
+            {voterList.length > 5 && (
                 <div className="sidebar-section voters-section">
                     <h3 className="sidebar-title" style={{ color: theme.primary }}>
                         👥 Санал өгсөн хүмүүс
@@ -91,12 +95,6 @@ export default function Sidebar({ theme, remainingVotes, totalVoters, voterList,
                     </div>
                 </div>
             )}
-
-            {/* User info */}
-            <div className="sidebar-user">
-                <span className="sidebar-user-dot" style={{ background: theme.primary }} />
-                <span className="sidebar-user-name">{user?.name}</span>
-            </div>
         </motion.aside>
     );
 }

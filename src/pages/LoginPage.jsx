@@ -39,7 +39,7 @@ export default function LoginPage() {
                     animate={{ y: '-10vh', opacity: [0, 0.6, 0.6, 0] }}
                     transition={{
                         duration: 6 + (i % 3),
-                        delay: i * 0.5,
+                        delay: i * 0.1,
                         repeat: Infinity,
                         ease: 'linear',
                     }}
