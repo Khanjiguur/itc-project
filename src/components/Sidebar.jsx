@@ -58,7 +58,7 @@ export default function Sidebar({ theme, remainingVotes, totalVoters, voterList,
             </div>
 
             {/* Voter list — only shown when > 20 voters */}
-            {voterList.length > 20 && (
+            {voterList.length > 10 && (
                 <div className="sidebar-section voters-section">
                     <h3 className="sidebar-title" style={{ color: theme.primary }}>
                         👥 Санал өгсөн хүмүүс

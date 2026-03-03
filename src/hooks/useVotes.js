@@ -78,35 +78,36 @@ export function useVotes(nominationId, currentUser) {
 
         try {
             await runTransaction(db, async (tx) => {
+                // READS: all reads must happen before any writes in a Firestore transaction
                 const myVoteSnap = await tx.get(myVoteRef);
+                const countsSnap = await tx.get(countsRef);
+                const voterSnap = await tx.get(voterListRef);
+
                 const currentMyVotes = myVoteSnap.exists() ? (myVoteSnap.data().votes || {}) : {};
                 const totalUsed = Object.values(currentMyVotes).reduce((a, b) => a + b, 0);
 
                 if (totalUsed >= VOTES_PER_PERSON) throw new Error('Санал дуусгавар боллоо');
 
                 const newMyVotes = { ...currentMyVotes, [employeeId]: (currentMyVotes[employeeId] || 0) + 1 };
-                tx.set(myVoteRef, { votes: newMyVotes, email: currentUser.email });
 
-                const countsSnap = await tx.get(countsRef);
                 const currentCounts = countsSnap.exists() ? countsSnap.data() : {};
-                tx.set(countsRef, { ...currentCounts, [employeeId]: (currentCounts[employeeId] || 0) + 1 });
 
-                const voterSnap = await tx.get(voterListRef);
                 const existingVoters = voterSnap.exists() ? (voterSnap.data().voters || []) : [];
                 const existingCompleted = voterSnap.exists() ? (voterSnap.data().completedVoters || []) : [];
                 const existingFullyBacked = voterSnap.exists() ? (voterSnap.data().fullyBackedEmployees || []) : [];
 
                 const alreadyInList = existingVoters.some(v => v.email === currentUser.email);
+                const nowIso = new Date().toISOString();
                 const updatedVoters = alreadyInList ? existingVoters : [
                     ...existingVoters,
-                    { name: voterName, email: currentUser.email, timestamp: new Date().toISOString() }
+                    { name: voterName, email: currentUser.email, timestamp: nowIso }
                 ];
 
                 // Check if this vote completes all 3
                 const newTotal = totalUsed + 1;
                 const alreadyCompleted = existingCompleted.some(v => v.email === currentUser.email);
                 const updatedCompleted = (!alreadyCompleted && newTotal >= VOTES_PER_PERSON)
-                    ? [...existingCompleted, { name: voterName, email: currentUser.email, timestamp: new Date().toISOString() }]
+                    ? [...existingCompleted, { name: voterName, email: currentUser.email, timestamp: nowIso }]
                     : existingCompleted;
 
                 // Check if all 3 votes went to ONE single employee
@@ -125,26 +126,29 @@ export function useVotes(nominationId, currentUser) {
                                     employeeId: recipientId,
                                     employeeName: recipientEmp.name,
                                     voterName,
-                                    timestamp: new Date().toISOString(),
+                                    timestamp: nowIso,
                                 }
                             ];
                         }
                     }
                 }
 
+                // WRITES: after all reads are done
+                tx.set(myVoteRef, { votes: newMyVotes, email: currentUser.email });
+                tx.set(countsRef, { ...currentCounts, [employeeId]: (currentCounts[employeeId] || 0) + 1 });
                 tx.set(voterListRef, {
                     voters: updatedVoters,
                     completedVoters: updatedCompleted,
                     fullyBackedEmployees: updatedFullyBacked,
                 });
 
-                // Write to secret log
+                // Write to secret log (new doc)
                 tx.set(logRef, {
                     voterId: currentUser.email,
                     voterName,
                     employeeId,
                     nominationId,
-                    timestamp: new Date().toISOString(),
+                    timestamp: nowIso,
                 });
             });
             return { success: true };
