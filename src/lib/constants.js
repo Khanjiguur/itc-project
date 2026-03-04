@@ -5,7 +5,7 @@
 // Одоо идэвхтэй байгаа номинацийн индекс (0 = анхдагч)
 // 0 = Шилдэг удирдагч, 1 = Хамтын ажиллагаа, 2 = Шинэлэг санаа
 // 3 = Хамгийн эерэг хандлага, 4 = Нуугдмал авьяас
-export const ACTIVE_NOMINATION_INDEX = 1;
+export const ACTIVE_NOMINATION_INDEX = 0;
 
 // Нэг номинацид нэг хүн хэдэн санал өгөх вэ
 export const VOTES_PER_PERSON = 3;
@@ -17,6 +17,35 @@ export const GENDER_EMOJI = { m: '👨🏼', f: '👩🏼' };
 //  5 НОМИНАЦИ — Гэрэл/цагаан дэвсгэрт тохирсон өнгө
 // ============================================================
 export const NOMINATIONS = [
+    {
+        id: 'best_funny',
+        name: 'Хамгийн хөгжилтэй',
+        emoji: '😜',
+        description: 'Хамт олондоо хамгийн их инээд баясгал түгээсэн',
+        theme: {
+            primary: '#d97706',
+            secondary: '#f59e0b',
+            accent: '#92400e',
+            textDark: '#78350f',
+            glow: 'rgba(5, 150, 105, 0.35)',
+            bg: `linear-gradient(145deg, rgba(255,251,235,0.9) 0%, rgba(254,243,199,0.9) 60%, rgba(253,230,138,0.9) 100%),        url('/funny.jpg')     `,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            pageBg: '#fffbeb',
+            cardBg: '#ffffff',
+            cardBorder: '#fbbf24',
+            cardShadow: 'rgba(217, 119, 6, 0.18)',
+            particle: '#f59e0b',
+            buttonBg: 'linear-gradient(135deg, #f59e0b, #d97706)',
+            buttonText: '#ffffff',
+            headerBg: 'rgba(255,251,235,0.92)',
+            badgeBg: '#fef3c7',
+            badgeText: '#92400e',
+            sidebarBg: '#fffdf0',
+            name: 'emerald',
+        }
+    },
     {
         id: 'best_coolest',
         name: 'Хамгийн cool ',
@@ -45,35 +74,6 @@ export const NOMINATIONS = [
             sidebarBg: '#f0fdf8',
             name: 'gold',
 
-        }
-    },
-    {
-        id: 'best_funny',
-        name: 'Хамгийн хөгжилтэй',
-        emoji: '😜',
-        description: 'Хамт олондоо хамгийн их инээд баясгал түгээсэн',
-        theme: {
-            primary: '#d97706',
-            secondary: '#f59e0b',
-            accent: '#92400e',
-            textDark: '#78350f',
-            glow: 'rgba(5, 150, 105, 0.35)',
-            bg: `linear-gradient(145deg, rgba(255,251,235,0.9) 0%, rgba(254,243,199,0.9) 60%, rgba(253,230,138,0.9) 100%),        url('/funny.jpg')     `,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            pageBg: '#fffbeb',
-            cardBg: '#ffffff',
-            cardBorder: '#fbbf24',
-            cardShadow: 'rgba(217, 119, 6, 0.18)',
-            particle: '#f59e0b',
-            buttonBg: 'linear-gradient(135deg, #f59e0b, #d97706)',
-            buttonText: '#ffffff',
-            headerBg: 'rgba(255,251,235,0.92)',
-            badgeBg: '#fef3c7',
-            badgeText: '#92400e',
-            sidebarBg: '#fffdf0',
-            name: 'emerald',
         }
     },
     {
