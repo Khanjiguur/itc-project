@@ -5,13 +5,13 @@
 // Одоо идэвхтэй байгаа номинацийн индекс (0 = анхдагч)
 // 0 = Шилдэг удирдагч, 1 = Хамтын ажиллагаа, 2 = Шинэлэг санаа
 // 3 = Хамгийн эерэг хандлага, 4 = Нуугдмал авьяас
-export const ACTIVE_NOMINATION_INDEX = 0;
+export const ACTIVE_NOMINATION_INDEX = 1;
 
 // Нэг номинацид нэг хүн хэдэн санал өгөх вэ
 export const VOTES_PER_PERSON = 3;
 
 // Хүйсийн emoji — та өөрчлөх боломжтой
-export const GENDER_EMOJI = { m: '🧔', f: '👩' };
+export const GENDER_EMOJI = { m: '♂️', f: '♀️' };
 
 // ============================================================
 //  5 НОМИНАЦИ — Гэрэл/цагаан дэвсгэрт тохирсон өнгө
@@ -50,7 +50,7 @@ export const NOMINATIONS = [
     {
         id: 'best_funny',
         name: 'Хамгийн хөгжилтэй',
-        emoji: '🤝',
+        emoji: '😜',
         description: 'Хамт олондоо хамгийн их инэээд баясгал түгээсэн',
         theme: {
             primary: '#d97706',
@@ -79,7 +79,7 @@ export const NOMINATIONS = [
     {
         id: 'best_model',
         name: 'Хамгийн Загварлаг',
-        emoji: '💡',
+        emoji: '✨',
         description: 'Хамгийн загварын мэдрэмжтэй хүн',
         theme: {
             primary: '#2563eb',
@@ -108,7 +108,7 @@ export const NOMINATIONS = [
     {
         id: 'best_attitude',
         name: 'Хамгийн тусч',
-        emoji: '🌟',
+        emoji: '🫶',
         description: 'Хамгийн их бусдад өгдөг хүн',
         theme: {
             primary: '#7c3aed',
@@ -137,7 +137,7 @@ export const NOMINATIONS = [
     {
         id: 'best_performance',
         name: 'Хамгийн чадварлаг',
-        emoji: '💎',
+        emoji: '🪄',
         description: 'Харагдаагүй ч гайхамшигтай чадварлаг хүн',
         theme: {
             primary: '#0891b2',
