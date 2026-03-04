@@ -183,7 +183,7 @@ export const EMPLOYEES = [
     { id: 'emp011', name: 'Дэлгэрмөрөн Есөнбилэг',  email: 'delgermurun.yes@itc.gov.mn', gender: 'f' },
     { id: 'emp012', name: 'Долгорсүрэн Батжаргал',  email: 'dolgorsuren.b@itc.gov.mn', gender: 'f' },
     { id: 'emp013', name: 'Ундрал  Ганбаатар',      email: 'undral@itc.gov.mn', gender: 'm' },
-    { id: 'emp014', name: 'Баябацэцэг Баатарцогт',  email: 'byambatsetseg.b@itc.gov.mn', gender: 'f' },
+    { id: 'emp014', name: 'Бямбацэцэг Баатарцогт',  email: 'byambatsetseg.b@itc.gov.mn', gender: 'f' },
     { id: 'emp015', name: 'Цэгмэд Төмөр ',          email: 'tsegmid.t@itc.gov.mn', gender: 'f' },
     { id: 'emp016', name: 'Булганжаргал	Баясгалан ',email: 'bulganjargal.b@itc.gov.mn', gender: 'm' },
     { id: 'emp017', name: 'Заяа	Жавхлан ',          email: 'zaya.j@itc.gov.mn', gender: 'f' },
