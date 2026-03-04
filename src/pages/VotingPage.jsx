@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast, { Toaster } from 'react-hot-toast';
 import { NOMINATIONS, EMPLOYEES, ACTIVE_NOMINATION_INDEX } from '../lib/constants';
@@ -92,7 +92,7 @@ export default function VotingPage() {
         }
     };
 
-    // Sort employees by vote count descending
+    // Sort employees by vote count descending (for ranks/medals only)
     const sortedEmployees = [...EMPLOYEES].sort((a, b) =>
         (voteCounts[b.id] || 0) - (voteCounts[a.id] || 0)
     );
@@ -109,6 +109,17 @@ export default function VotingPage() {
         const next = voteCounts[sortedEmployees[i + 1]?.id] || 0;
         if (curr > 0 && curr > next) showMedalSet.add(sortedEmployees[i]?.id);
     });
+
+    // Randomize display order of employees (stable during a session/mount)
+    const shuffledEmployees = useMemo(() => {
+        const arr = [...EMPLOYEES];
+        // Fisher–Yates shuffle
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }, [nomination.id]);
 
     // Employees who received all 3 votes from a single person
     const fullyBackedSet = new Set((fullyBackedEmployees || []).map(e => e.employeeId));
@@ -358,7 +369,7 @@ export default function VotingPage() {
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.3 }}
                         >
-                            {sortedEmployees.map((emp, i) => (
+                            {shuffledEmployees.map((emp, i) => (
                                 <motion.div
                                     key={emp.id}
                                     initial={{ opacity: 0, scale: 0.7, y: 20 }}

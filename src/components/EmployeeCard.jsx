@@ -238,10 +238,8 @@ export default function EmployeeCard({ employee, voteCount, myVoteCount, canVote
                 >
                     {voting ? (
                         <motion.span animate={{ rotate: 360 }} transition={{ duration: 0.6, repeat: Infinity, ease: 'linear' }}>⏳</motion.span>
-                    ) : canVote ? (
-                        '⭐ Санал өгөх'
                     ) : (
-                        '✓ Өгсөн'
+                        '⭐ Санал өгөх'
                     )}
                 </motion.button>
 

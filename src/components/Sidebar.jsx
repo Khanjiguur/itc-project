@@ -38,7 +38,7 @@ export default function Sidebar({ theme, remainingVotes, totalVoters, voterList,
                 <p className="vote-remaining-text" style={{ color: theme.accent }}>
                     {remainingVotes > 0
                         ? `${remainingVotes} санал үлдсэн`
-                        : '✅ Бүх санал өгсөн!'}
+                        : '✅ 3 санал өгч дууссан!'}
                 </p>
             </div>
 
