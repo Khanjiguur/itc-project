@@ -384,7 +384,7 @@ export default function VotingPage() {
                                 outline: 'none',
                                 background: '#fff',
                                 color: theme.textDark,
-                                boxShadow: '0 4px 16px rgba(0,0,0,0.05)',
+                                boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
                                 fontSize: '16px',
                             }}
                         />

@@ -276,9 +276,9 @@ body {
 
 .header-title {
   font-family: 'Orbitron', sans-serif;
-  font-size: 1.2rem;
+  font-size: 1.13rem;
   font-weight: 900;
-  letter-spacing: 2.5px;
+  letter-spacing: 0.5px;
   background: linear-gradient(135deg, #d97706, #92400e);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
