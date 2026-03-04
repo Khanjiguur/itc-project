@@ -121,18 +121,17 @@ export default function VotingPage() {
         return arr;
     }, [nomination.id]);
 
-    // Pin medalists from the current top 3 to the front (in rank order),
-    // while keeping the rest in the stable random order
-    const pinnedTop = sortedEmployees
-        .slice(0, 3)
-        .filter(emp => showMedalSet.has(emp.id));
-    const pinnedIds = new Set(pinnedTop.map(e => e.id));
+    // Pin TOP 5 (by rank) to the very front (keep their rank order),
+    // while keeping the rest in the stable random order.
+    // Note: Medal visibility logic remains for TOP 3 only via showMedalSet
+    const pinnedTopFive = sortedEmployees.slice(0, 5);
+    const pinnedIds = new Set(pinnedTopFive.map(e => e.id));
     const displayEmployees = useMemo(() => {
         return [
-            ...pinnedTop,
+            ...pinnedTopFive,
             ...baseShuffledEmployees.filter(e => !pinnedIds.has(e.id)),
         ];
-    }, [pinnedTop, baseShuffledEmployees]);
+    }, [pinnedTopFive, baseShuffledEmployees]);
 
     // Employees who received all 3 votes from a single person
     const fullyBackedSet = new Set((fullyBackedEmployees || []).map(e => e.employeeId));
