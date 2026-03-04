@@ -49,7 +49,7 @@ export const NOMINATIONS = [
     {
         id: 'best_coolest',
         name: 'Хамгийн cool ',
-        emoji: '👑',
+        emoji: '😎',
         description: 'Хамгийн cool, Coolest ',
         theme: {
             primary: '#334155', // Slate 700 (Хар тугалган саарал)
