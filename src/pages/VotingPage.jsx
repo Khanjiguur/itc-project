@@ -127,7 +127,7 @@ export default function VotingPage() {
     // Pin TOP 5 (by rank) to the very front (keep their rank order),
     // while keeping the rest in the stable random order.
     // Note: Medal visibility logic remains for TOP 3 only via showMedalSet
-    const pinnedTopFive = sortedEmployees.slice(0, 5);
+    const pinnedTopFive = sortedEmployees.slice(0, 10);
     const pinnedIds = new Set(pinnedTopFive.map(e => e.id));
     const displayEmployees = useMemo(() => {
         return [
