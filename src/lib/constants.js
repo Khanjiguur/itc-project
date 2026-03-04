@@ -51,7 +51,7 @@ export const NOMINATIONS = [
         id: 'best_funny',
         name: 'Хамгийн хөгжилтэй',
         emoji: '😜',
-        description: 'Хамт олондоо хамгийн их инэээд баясгал түгээсэн',
+        description: 'Хамт олондоо хамгийн их инээд баясгал түгээсэн',
         theme: {
             primary: '#d97706',
             secondary: '#f59e0b',
