@@ -134,9 +134,9 @@ export const NOMINATIONS = [
     },
     {
         id: 'best_performance',
-        name: 'Хамгийн чадварлаг',
+        name: 'Хамгийн мундаг',
         emoji: '🪄',
-        description: 'Гайхамшигтай чадварлаг хүн',
+        description: 'Бүхнийг чадагч бараг Superman & Wonderwoman',
         theme: {
             primary: '#1e293b', // Midnight Slate
             secondary: '#0ea5e9', // Electric Cyan (Гэрэлтсэн цэнхэр)
