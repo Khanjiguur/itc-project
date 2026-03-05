@@ -57,7 +57,7 @@ export const NOMINATIONS = [
             accent: '#0f172a', // Тансаг хар хөх
             textDark: '#020617', // Гүн хар текст
             glow: 'rgba(148, 163, 184, 0.3)', // Мөнгөлөг гэрэлтэлт
-            bg: `linear-gradient(145deg, #f8fafc 0%, #f1f5f9 60%, #e2e8f0 100%), url('/minimal_fashion.jpg')`,
+            bg: `linear-gradient(145deg, rgb(248, 250, 252,0.9) 0%, rgb(241, 245, 249,0.9) 60%, rgb(226, 232, 240, 0.9) 100%), url('/minimal_fashion.jpg')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
@@ -76,32 +76,31 @@ export const NOMINATIONS = [
         }
     },
     {
-        id: 'best_model',
-        name: 'Хамгийн Загварлаг',
-        emoji: '✨',
-        description: 'Хамгийн загварын мэдрэмжтэй хүн',
+        id: 'best_emo',
+        name: 'Хамгийн Эмо Үүрд',
+        emoji: '🖤',
+        description: 'Хамгийн эмзэг мэдрэмтгий орхигдсон',
         theme: {
-            primary: '#1e293b', // Midnight Slate
-            secondary: '#0ea5e9', // Electric Cyan (Гэрэлтсэн цэнхэр)
-            accent: '#38bdf8', // Тэнгэрийн цэнхэр
-            textDark: '#0f172a',
-            glow: 'rgba(14, 165, 233, 0.35)',
-            bg: `linear-gradient(145deg, #f0f9ff 0%, #e0f2fe 60%, #bae6fd 100%), url('/cool_vibe.jpg')`,
-            backgroundSize: 'cover',
+            primary: '#4f46e5', // Indigo (Гүн нил хөх)
+            secondary: '#8b5cf6', // Violet (Зөөлөн нил)
+            accent: '#f59e0b', // Алтлаг (Шидэт дохионы оч шиг)
+            textDark: '#312e81', // Гүн Indigo текст
+            glow: 'rgba(139, 92, 246, 0.3)', // Нил ягаан зөөлөн туяа
+            bg: `linear-gradient(145deg, rgba(245,243,255,0.9) 0%, rgba(237,233,254,0.9) 60%, rgba(221,214,254,0.9) 100%), url('/emo.jpg')`,            backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
-            pageBg: '#f0f9ff',
+            pageBg: '#f5f3ff',
             cardBg: '#ffffff',
-            cardBorder: '#7dd3fc',
-            cardShadow: 'rgba(14, 165, 233, 0.15)',
-            particle: '#0ea5e9',
-            buttonBg: 'linear-gradient(135deg, #0ea5e9, #0284c7)',
+            cardBorder: '#c4b5fd', // Завсрын нил ягаан хүрээ
+            cardShadow: 'rgba(79, 70, 229, 0.12)',
+            particle: '#a78bfa',
+            buttonBg: 'linear-gradient(135deg, #6366f1, #4f46e5)',
             buttonText: '#ffffff',
-            headerBg: 'rgba(240, 249, 255, 0.95)',
-            badgeBg: '#e0f2fe',
-            badgeText: '#0369a1',
-            sidebarBg: '#f8fafc',
-            name: 'ice-monarch',
+            headerBg: 'rgba(245, 243, 255, 0.95)',
+            badgeBg: '#e0e7ff',
+            badgeText: '#4338ca',
+            sidebarBg: '#f5f3ff',
+            name: 'mystic-pro',
         }
     },
     {
@@ -115,8 +114,7 @@ export const NOMINATIONS = [
             accent: '#f44e28', // Зүрхэн хэлбэртэй гарны өнгөнд зориулсан зөөлөн улаан
             textDark: '#064e3b',
             glow: 'rgba(16, 185, 129, 0.25)',
-            bg: `linear-gradient(145deg, #f0fdf4 0%, #dcfce7 60%, #bbf7d0 100%), url('/kindness_texture.jpg')`,
-            backgroundSize: 'cover',
+            bg: `linear-gradient( 145deg,  rgba(240, 253, 244, 0.9) 0%,   rgba(220, 252, 231, 0.9) 60%, rgba(187, 247, 208, 0.9) 100%), url('/help.jpg')`,            backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
             pageBg: '#f0fdf4', // Цэвэрхэн цайвар ногоон суурь
@@ -139,26 +137,26 @@ export const NOMINATIONS = [
         emoji: '🪄',
         description: 'Гайхамшигтай чадварлаг хүн',
         theme: {
-            primary: '#4f46e5', // Indigo (Гүн нил хөх)
-            secondary: '#8b5cf6', // Violet (Зөөлөн нил)
-            accent: '#f59e0b', // Алтлаг (Шидэт дохионы оч шиг)
-            textDark: '#312e81', // Гүн Indigo текст
-            glow: 'rgba(139, 92, 246, 0.3)', // Нил ягаан зөөлөн туяа
-            bg: `linear-gradient(145deg, #f5f3ff 0%, #ede9fe 60%, #ddd6fe 100%), url('/magic_texture.jpg')`,
+            primary: '#1e293b', // Midnight Slate
+            secondary: '#0ea5e9', // Electric Cyan (Гэрэлтсэн цэнхэр)
+            accent: '#38bdf8', // Тэнгэрийн цэнхэр
+            textDark: '#0f172a',
+            glow: 'rgba(14, 165, 233, 0.35)',
+            bg: `linear-gradient( 145deg,   rgba(245, 243, 255, 0.9) 0%,  rgba(237, 233, 254, 0.9) 60%,  rgba(221, 214, 254, 0.9) 100%), url('/best_performance.jpg')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
-            pageBg: '#f5f3ff',
+            pageBg: '#f0f9ff',
             cardBg: '#ffffff',
-            cardBorder: '#c4b5fd', // Завсрын нил ягаан хүрээ
-            cardShadow: 'rgba(79, 70, 229, 0.12)',
-            particle: '#a78bfa',
-            buttonBg: 'linear-gradient(135deg, #6366f1, #4f46e5)',
+            cardBorder: '#7dd3fc',
+            cardShadow: 'rgba(14, 165, 233, 0.15)',
+            particle: '#0ea5e9',
+            buttonBg: 'linear-gradient(135deg, #0ea5e9, #0284c7)',
             buttonText: '#ffffff',
-            headerBg: 'rgba(245, 243, 255, 0.95)',
-            badgeBg: '#e0e7ff',
-            badgeText: '#4338ca',
-            sidebarBg: '#f5f3ff',
+            headerBg: 'rgba(240, 249, 255, 0.95)',
+            badgeBg: '#e0f2fe',
+            badgeText: '#0369a1',
+            sidebarBg: '#f8fafc',
             name: 'mystic-pro',
         }
     }
