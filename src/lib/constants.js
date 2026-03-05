@@ -5,7 +5,7 @@
 // Одоо идэвхтэй байгаа номинацийн индекс (0 = анхдагч)
 // 0 = Шилдэг удирдагч, 1 = Хамтын ажиллагаа, 2 = Шинэлэг санаа
 // 3 = Хамгийн эерэг хандлага, 4 = Нуугдмал авьяас
-export const ACTIVE_NOMINATION_INDEX = 2;
+export const ACTIVE_NOMINATION_INDEX = 3;
 
 // Нэг номинацид нэг хүн хэдэн санал өгөх вэ
 export const VOTES_PER_PERSON = 3;
@@ -104,17 +104,18 @@ export const NOMINATIONS = [
         }
     },
     {
-        id: 'best_attitude',
-        name: 'Хамгийн тусч',
-        emoji: '🫶',
-        description: 'Хамгийн их бусдад тусладаг хүн',
+        id: 'best_sport',
+        name: 'Хамгийн спортлог',
+        emoji: '🏀',
+        description: 'Хамгийн эрч хүчээр дүүрэн',
         theme: {
             primary: '#059669', // Emerald Green (Найдвартай байдал)
             secondary: '#10b981', // Зөөлөн ногоон
-            accent: '#f44e28', // Зүрхэн хэлбэртэй гарны өнгөнд зориулсан зөөлөн улаан
+            accent: '#f59e0b', // Алтлаг (Шидэт дохионы оч шиг)
             textDark: '#064e3b',
             glow: 'rgba(16, 185, 129, 0.25)',
-            bg: `linear-gradient( 145deg,  rgba(240, 253, 244, 0.9) 0%,   rgba(220, 252, 231, 0.9) 60%, rgba(187, 247, 208, 0.9) 100%), url('/help.jpg')`,            backgroundSize: 'cover',
+            bg: `linear-gradient( 145deg,  rgba(240, 253, 244, 0.9) 0%,   rgba(220, 252, 231, 0.9) 60%, rgba(187, 247, 208, 0.9) 100%), url('/sport.jpg')`,
+            backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
             pageBg: '#f0fdf4', // Цэвэрхэн цайвар ногоон суурь
