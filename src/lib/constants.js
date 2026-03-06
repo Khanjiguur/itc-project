@@ -137,6 +137,7 @@ export const NOMINATIONS = [
         name: 'Хамгийн мундаг',
         emoji: '🪄',
         description: 'Бүхнийг чадагч бараг Superman & Wonderwoman',
+        finished: true,
         theme: {
             primary: '#1e293b', // Midnight Slate
             secondary: '#0ea5e9', // Electric Cyan (Гэрэлтсэн цэнхэр)

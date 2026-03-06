@@ -13,6 +13,7 @@ export default function VotingPage() {
     const { user, logout } = useAuth();
     const nomination = NOMINATIONS[ACTIVE_NOMINATION_INDEX];
     const theme = nomination.theme;
+    const isFinished = nomination.finished;
 
     // Local search state (filter by employee name)
     const [searchQuery, setSearchQuery] = useState('');
@@ -151,6 +152,23 @@ export default function VotingPage() {
 
     const remaining = getRemainingVotes();
 
+    const currentWinner = useMemo(() => {
+        if (!isFinished) return null;
+        let maxVotes = 0;
+        let winnerId = null;
+        for (const [empId, cnt] of Object.entries(voteCounts)) {
+            if (cnt > maxVotes) {
+                maxVotes = cnt;
+                winnerId = empId;
+            }
+        }
+        if (winnerId) {
+            const emp = EMPLOYEES.find(e => e.id === winnerId);
+            return emp ? { employee: emp, votes: maxVotes, nomination } : null;
+        }
+        return null;
+    }, [isFinished, voteCounts, nomination]);
+
     return (
         <motion.div
             className="voting-page"
@@ -194,9 +212,9 @@ export default function VotingPage() {
 
             {/* Previous Nominations' Winners */}
             <AnimatePresence>
-                {prevWinners.filter(Boolean).length > 0 && (
+                {(prevWinners.filter(Boolean).length > 0 || currentWinner) && (
                     <div className="prev-winners-row">
-                        {prevWinners.map((winner, idx) => winner && (
+                        {[...prevWinners, currentWinner].map((winner, idx) => winner && (
                             <motion.div
                                 key={winner.nomination.id}
                                 className="prev-winner-section"
@@ -334,178 +352,179 @@ export default function VotingPage() {
             </AnimatePresence>
 
             {/* Nomination Banner */}
-            <motion.div
-                className="nomination-banner"
-                style={{ borderColor: theme.cardBorder }}
-                initial={{ scale: 0.92, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.2, duration: 0.5 }}
-            >
-                <motion.span
-                    className="nomination-emoji"
-                    animate={{ scale: [1, 1.15, 1], rotate: [0, 8, -8, 0] }}
-                    transition={{ duration: 2.5, repeat: Infinity }}
+            {!isFinished && (
+                <motion.div
+                    className="nomination-banner"
+                    style={{ borderColor: theme.cardBorder }}
+                    initial={{ scale: 0.92, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.2, duration: 0.5 }}
                 >
-                    {nomination.emoji}
-                </motion.span>
-                <div>
-                    <h2 className="nomination-name" style={{ color: theme.primary }}>
-                        {nomination.name}
-                    </h2>
-                    <p className="nomination-desc" style={{ color: theme.textDark }}>
-                        {nomination.description}
-                    </p>
-                </div>
-                {/* Name filter (uses the free space in the banner) */}
-                <div
-                    className="nomination-search"
-                    style={{
-                        marginLeft: 'auto',
-                        marginRight: '12px',
-                        display: 'flex',
-                        alignItems: 'flex-end',
-                        gap: '8px',
-                        flex: '0 1 700px',
-                        maxWidth: '80%',
-                    }}
-                >
-                    <div style={{ position: 'relative', width: '100%' }}>
-                        <input
-                            type="text"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder="Нэрээр хайх..."
-                            className="nomination-search-input"
-                            style={{
-                                width: '100%',
-                                padding: '14px 42px 14px 40px',
-                                borderRadius: '12px',
-                                border: `1.5px solid ${theme.cardBorder}`,
-                                outline: 'none',
-                                background: '#fff',
-                                color: theme.textDark,
-                                boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
-                                fontSize: '16px',
-                            }}
-                        />
-                        <span
-                            style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', opacity: 0.6, fontSize: '16px' }}
-                        >🔎</span>
-                        {searchQuery && (
-                            <button
-                                onClick={() => setSearchQuery('')}
-                                aria-label="Цэвэрлэх"
+                    <motion.span
+                        className="nomination-emoji"
+                        animate={{ scale: [1, 1.15, 1], rotate: [0, 8, -8, 0] }}
+                        transition={{ duration: 2.5, repeat: Infinity }}
+                    >
+                        {nomination.emoji}
+                    </motion.span>
+                    <div>
+                        <h2 className="nomination-name" style={{ color: theme.primary }}>
+                            {nomination.name}
+                        </h2>
+                        <p className="nomination-desc" style={{ color: theme.textDark }}>
+                            {nomination.description}
+                        </p>
+                    </div>
+                    {/* Name filter (uses the free space in the banner) */}
+                    <div
+                        className="nomination-search"
+                        style={{
+                            marginLeft: 'auto',
+                            marginRight: '12px',
+                            display: 'flex',
+                            alignItems: 'flex-end',
+                            gap: '8px',
+                            flex: '0 1 700px',
+                            maxWidth: '80%',
+                        }}
+                    >
+                        <div style={{ position: 'relative', width: '100%' }}>
+                            <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder="Нэрээр хайх..."
+                                className="nomination-search-input"
                                 style={{
-                                    position: 'absolute',
-                                    right: 10,
-                                    top: '50%',
-                                    transform: 'translateY(-50%)',
-                                    border: 'none',
-                                    background: 'transparent',
-                                    cursor: 'pointer',
-                                    color: theme.primary,
-                                    fontSize: '18px',
+                                    width: '100%',
+                                    padding: '14px 42px 14px 40px',
+                                    borderRadius: '12px',
+                                    border: `1.5px solid ${theme.cardBorder}`,
+                                    outline: 'none',
+                                    background: '#fff',
+                                    color: theme.textDark,
+                                    boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+                                    fontSize: '16px',
                                 }}
-                            >×</button>
+                            />
+                            <span
+                                style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', opacity: 0.6, fontSize: '16px' }}
+                            >🔎</span>
+                            {searchQuery && (
+                                <button
+                                    onClick={() => setSearchQuery('')}
+                                    aria-label="Цэвэрлэх"
+                                    style={{
+                                        position: 'absolute',
+                                        right: 10,
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                        border: 'none',
+                                        background: 'transparent',
+                                        cursor: 'pointer',
+                                        color: theme.primary,
+                                        fontSize: '18px',
+                                    }}
+                                >×</button>
+                            )}
+                        </div>
+                        {searchQuery && (
+                            <span
+                                className="search-result-count"
+                                style={{
+                                    whiteSpace: 'nowrap',
+                                    color: theme.primary,
+                                    fontWeight: 600,
+                                    border: `1px solid ${theme.cardBorder}`,
+                                    padding: '8px 12px',
+                                    borderRadius: '12px',
+                                    background: '#fff',
+                                }}
+                            >
+                                {filteredEmployees.length} үр дүн
+                            </span>
                         )}
                     </div>
-                    {searchQuery && (
-                        <span
-                            className="search-result-count"
-                            style={{
-                                whiteSpace: 'nowrap',
-                                color: theme.primary,
-                                fontWeight: 600,
-                                border: `1px solid ${theme.cardBorder}`,
-                                padding: '8px 12px',
-                                borderRadius: '12px',
-                                background: '#fff',
-                            }}
+                    <div className="nomination-votes-left" style={{ color: theme.primary, borderColor: theme.cardBorder }}>
+                        <motion.span
+                            key={remaining}
+                            className="votes-left-num"
+                            initial={{ scale: 1.4 }}
+                            animate={{ scale: 1 }}
+                            transition={{ type: 'spring', stiffness: 400 }}
                         >
-                            {filteredEmployees.length} үр дүн
-                        </span>
-                    )}
-                </div>
-                <div className="nomination-votes-left" style={{ color: theme.primary, borderColor: theme.cardBorder }}>
-                    <motion.span
-                        key={remaining}
-                        className="votes-left-num"
-                        initial={{ scale: 1.4 }}
-                        animate={{ scale: 1 }}
-                        transition={{ type: 'spring', stiffness: 400 }}
-                    >
-                        {remaining}
-                    </motion.span>
-                    <span className="votes-left-label">санал үлдсэн</span>
-                </div>
-            </motion.div>
-
-
-
+                            {remaining}
+                        </motion.span>
+                        <span className="votes-left-label">санал үлдсэн</span>
+                    </div>
+                </motion.div>
+            )}
 
             {/* Main content */}
-            <div className="voting-content">
-                {/* Employee grid */}
-                <div className="employee-grid-wrapper">
-                    {loading ? (
-                        <div className="loading-screen">
-                            <motion.div
-                                className="loading-spinner"
-                                style={{ borderTopColor: theme.primary }}
-                                animate={{ rotate: 360 }}
-                                transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                            />
-                            <p style={{ color: theme.accent, fontWeight: 600 }}>Ачаалж байна...</p>
-                        </div>
-                    ) : (
-                        <>
-                            {filteredEmployees.length === 0 ? (
-                                <div className="no-results" style={{ textAlign: 'center', padding: '32px 0', color: theme.accent }}>
-                                    Хайлтад тохирох ажилтан олдсонгүй
-                                </div>
-                            ) : (
+            {!isFinished && (
+                <div className="voting-content">
+                    {/* Employee grid */}
+                    <div className="employee-grid-wrapper">
+                        {loading ? (
+                            <div className="loading-screen">
                                 <motion.div
-                                    className="employee-grid"
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ delay: 0.3 }}
-                                >
-                                    {filteredEmployees.map((emp, i) => (
-                                        <motion.div
-                                            key={emp.id}
-                                            initial={{ opacity: 0, scale: 0.7, y: 20 }}
-                                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                                            transition={{ delay: i * 0.015, type: 'spring', stiffness: 220, damping: 18 }}
-                                        >
-                                            <EmployeeCard
-                                                employee={emp}
-                                                voteCount={voteCounts[emp.id] || 0}
-                                                myVoteCount={getMyVoteCountForEmployee(emp.id)}
-                                                canVote={getRemainingVotes() > 0}
-                                                onVote={() => handleVote(emp)}
-                                                theme={theme}
-                                                rank={rankMap[emp.id]}
-                                                showMedal={showMedalSet.has(emp.id)}
-                                                isFullyBacked={fullyBackedSet.has(emp.id)}
-                                            />
-                                        </motion.div>
-                                    ))}
-                                </motion.div>
-                            )}
-                        </>
-                    )}
-                </div>
+                                    className="loading-spinner"
+                                    style={{ borderTopColor: theme.primary }}
+                                    animate={{ rotate: 360 }}
+                                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                                />
+                                <p style={{ color: theme.accent, fontWeight: 600 }}>Ачаалж байна...</p>
+                            </div>
+                        ) : (
+                            <>
+                                {filteredEmployees.length === 0 ? (
+                                    <div className="no-results" style={{ textAlign: 'center', padding: '32px 0', color: theme.accent }}>
+                                        Хайлтад тохирох ажилтан олдсонгүй
+                                    </div>
+                                ) : (
+                                    <motion.div
+                                        className="employee-grid"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ delay: 0.3 }}
+                                    >
+                                        {filteredEmployees.map((emp, i) => (
+                                            <motion.div
+                                                key={emp.id}
+                                                initial={{ opacity: 0, scale: 0.7, y: 20 }}
+                                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                                transition={{ delay: i * 0.015, type: 'spring', stiffness: 220, damping: 18 }}
+                                            >
+                                                <EmployeeCard
+                                                    employee={emp}
+                                                    voteCount={voteCounts[emp.id] || 0}
+                                                    myVoteCount={getMyVoteCountForEmployee(emp.id)}
+                                                    canVote={getRemainingVotes() > 0}
+                                                    onVote={() => handleVote(emp)}
+                                                    theme={theme}
+                                                    rank={rankMap[emp.id]}
+                                                    showMedal={showMedalSet.has(emp.id)}
+                                                    isFullyBacked={fullyBackedSet.has(emp.id)}
+                                                />
+                                            </motion.div>
+                                        ))}
+                                    </motion.div>
+                                )}
+                            </>
+                        )}
+                    </div>
 
-                {/* Sidebar */}
-                <Sidebar
-                    theme={theme}
-                    remainingVotes={getRemainingVotes()}
-                    totalVoters={totalVoters}
-                    voterList={voterList}
-                    nominationName={nomination.name}
-                    user={user}
-                />
-            </div>
+                    {/* Sidebar */}
+                    <Sidebar
+                        theme={theme}
+                        remainingVotes={getRemainingVotes()}
+                        totalVoters={totalVoters}
+                        voterList={voterList}
+                        nominationName={nomination.name}
+                        user={user}
+                    />
+                </div>
+            )}
         </motion.div>
     );
 }
