@@ -5,7 +5,7 @@
 // Одоо идэвхтэй байгаа номинацийн индекс (0 = анхдагч)
 // 0 = Шилдэг удирдагч, 1 = Хамтын ажиллагаа, 2 = Шинэлэг санаа
 // 3 = Хамгийн эерэг хандлага, 4 = Нуугдмал авьяас
-export const ACTIVE_NOMINATION_INDEX = 3;
+export const ACTIVE_NOMINATION_INDEX = 4;
 
 // Нэг номинацид нэг хүн хэдэн санал өгөх вэ
 export const VOTES_PER_PERSON = 3;
